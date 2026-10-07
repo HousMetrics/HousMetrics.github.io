@@ -1,7 +1,11 @@
 # HousMetrics
 
-> Write a short introduction here. Describe what this page explores and why it matters.
+In machine learning, a linear regression model can be used to predict data points when the data is assumed to have a linear trend. Another use case of the linear regression model is to determine a cause-and-effect relationship between variables. This cause-and-effect relationship is established by estimating a causal quantity known as the average treatment effect (ATE). The ATE is defined as the average causal effect of a treatment or covariate on the outcome variable.
 
+```latex
+% Replace this example with your equations.
+3*5
+```
 ## Question
 
 What do you want to find out?
