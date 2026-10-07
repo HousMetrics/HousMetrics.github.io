@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HousMetrics</title>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #121a2b;
+        --primary: #7dd3fc;
+        --accent: #a78bfa;
+        --text: #e5eefb;
+        --muted: #9fb3cc;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(135deg, var(--bg), #111827 50%, #0f172a);
+        color: var(--text);
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+      }
+
+      .card {
+        width: min(900px, 90vw);
+        background: rgba(18, 26, 43, 0.9);
+        border: 1px solid rgba(125, 211, 252, 0.2);
+        border-radius: 18px;
+        padding: 48px 32px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+        text-align: center;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(167, 139, 250, 0.12);
+        border: 1px solid rgba(167, 139, 250, 0.3);
+        color: var(--primary);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        margin: 0 0 16px;
+        line-height: 1.1;
+      }
+
+      p {
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.7;
+        margin: 0 auto;
+        max-width: 680px;
+      }
+
+      .links {
+        margin-top: 32px;
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      a {
+        text-decoration: none;
+        color: var(--text);
+        background: rgba(125, 211, 252, 0.08);
+        border: 1px solid rgba(125, 211, 252, 0.3);
+        padding: 12px 18px;
+        border-radius: 10px;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+
+      a:hover {
+        transform: translateY(-1px);
+        border-color: rgba(125, 211, 252, 0.6);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <div class="badge">GitHub Pages</div>
+      <h1>HousMetrics</h1>
+      <p>
+        This is the initial landing page for HousMetrics. Your GitHub Pages site is active and
+        ready to be customized with your content, sections, and branding.
+      </p>
+      <div class="links">
+        <a href="https://github.com/HousMetrics/HousMetrics.github.io">Repository</a>
+      </div>
+    </main>
+  </body>
+</html>
