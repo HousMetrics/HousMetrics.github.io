@@ -164,7 +164,7 @@
 
       .angled-arrows {
         width: 100%;
-        height: 60px;
+        height: 80px;
         position: relative;
         display: flex;
         justify-content: center;
@@ -174,7 +174,7 @@
       svg {
         width: 100%;
         height: 100%;
-        max-width: 300px;
+        max-width: 350px;
       }
 
       section {
@@ -233,7 +233,7 @@
       <section>
         <h2>Why Causal Inference Matters</h2>
         <p>
-          In machine learning, a linear regression model can be used to predict data points when the data is assumed to have a linear trend. Another use case is to determine whether a relationship between variables is not just predictive but plausibly causal.
+          In machine learning, a linear regression model can be used to predict data points when the data is assumed to have a linear trend. Another use case is to determine whether a relationship between two variables is actually causal. Understanding causality requires thinking carefully about the data-generating process, not just the correlations we observe.
         </p>
 
         <div class="diagram-box">
@@ -248,7 +248,7 @@
         </div>
 
         <p>
-          In reality, there are often more variables and more intricate complexities lurking around the corner. A classic example is the relationship between a seasonal driver and two observed outcomes, where correlation may look strong even when the true causal story is more subtle.
+          In reality, there are often more variables and more intricate complexities lurking around the corner. A classic example is the relationship between a seasonal driver and two observed outcomes that both rise in summer.
         </p>
       </section>
 
@@ -264,15 +264,17 @@
               <div class="node">Confounder</div>
             </div>
             <div class="angled-arrows">
-              <svg viewBox="0 0 300 60" preserveAspectRatio="xMidYMid meet">
-                <!-- Left arrow from confounder to variable (pointing down-left ~30°) -->
+              <svg viewBox="0 0 350 80" preserveAspectRatio="xMidYMid meet">
+                <!-- Arrow definitions -->
                 <defs>
                   <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
                     <polygon points="0 0, 10 3, 0 6" fill="#24292f" />
                   </marker>
                 </defs>
-                <line x1="150" y1="0" x2="100" y2="60" stroke="#24292f" stroke-width="2" marker-end="url(#arrowhead)" />
-                <line x1="150" y1="0" x2="200" y2="60" stroke="#24292f" stroke-width="2" marker-end="url(#arrowhead)" />
+                <!-- Left arrow from confounder (bottom-left) to variable (top-right) -->
+                <line x1="165" y1="10" x2="95" y2="75" stroke="#24292f" stroke-width="2" marker-end="url(#arrowhead)" />
+                <!-- Right arrow from confounder (bottom-right) to outcome (top-left) -->
+                <line x1="185" y1="10" x2="255" y2="75" stroke="#24292f" stroke-width="2" marker-end="url(#arrowhead)" />
               </svg>
             </div>
             <div class="diagram">
@@ -287,7 +289,7 @@
         </div>
 
         <p>
-          A useful illustration is the example of ice cream sales and shark attacks. Both rise during summer, so the correlation between them may look high even though the underlying causal mechanism is a third variable—warm weather—driving both.
+          A useful illustration is the example of ice cream sales and shark attacks. Both rise during summer, so the correlation between them may look high even though the underlying causal mechanism is completely different.
         </p>
 
         <div class="code-label">Data generating process:</div>
@@ -295,11 +297,11 @@
 ice_cream_sales = 2*summer_indicator + epsilon_sales</code></pre>
 
         <p>
-          Where the last terms of each formula represent the error term. When we receive the data and check the Pearson correlation between shark attacks and ice cream sales it is equal to 92%. Surely these are related! But are they truly causal?
+          Where the last terms of each formula represent the error term. When we receive the data and check the Pearson correlation between shark attacks and ice cream sales it is equal to 92%. So they appear highly correlated.
         </p>
 
         <p>
-          In this setup, the error terms reflect noise, but the shared seasonal pattern can create a misleadingly high Pearson correlation. If we regress shark attacks on ice cream sales alone, we may infer a strong relationship that is not truly causal.
+          In this setup, the error terms reflect noise, but the shared seasonal pattern can create a misleadingly high Pearson correlation. If we regress shark attacks on ice cream sales alone, we get:
         </p>
 
         <div class="code-label">Naive regression (only ice cream sales):</div>
@@ -315,7 +317,7 @@ print("Slope:", model.coef_[0])</code></pre>
 Slope: 1.29</div>
 
         <p>
-          This can be misleadingly interpreted as <span class="em">"for every ice cream sale there will be 1.29 shark attacks."</span> However, we have seen that the original data explicitly shows that these two variables are not causally related—they just both respond to summer!
+          This can be misleadingly interpreted as <span class="em">"for every ice cream sale there will be 1.29 shark attacks."</span> However, we have seen that the original data explicitly shows that ice cream sales do not cause shark attacks. The true effect is zero!
         </p>
 
         <p>
@@ -342,7 +344,7 @@ Slope: [0.03 2.94]</div>
 Slope: 3.01</div>
 
         <p>
-          This illustrates a core lesson of causal inference: <span class="strong">correlation is not enough; we need to reason about the data-generating process.</span> By accounting for the confounder, we can see that ice cream sales have essentially no causal effect on shark attacks—the apparent relationship was spurious all along.
+          This illustrates a core lesson of causal inference: <span class="strong">correlation is not enough; we need to reason about the data-generating process.</span> By accounting for the confounder, we can see that ice cream sales have virtually no effect on shark attacks, and that the summer season is the true driver of both.
         </p>
       </section>
     </div>
