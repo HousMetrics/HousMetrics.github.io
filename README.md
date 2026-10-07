@@ -17,7 +17,7 @@ In machine learning, a linear regression model can be used to predict data point
 \end{document}
 ```
 The above image is a simple case of causal relationship, *in reality there are more variables or more intricate complexities lurking around the corner*. Take, for instance, the infamous example of ice cream sales and shark attacks. We could see in the data that as sales go up shark attacks increase as well. This could lead someone to make the wrong conclusion that an incraese in ice cream sales cause shark attacks (or the other way around). The real reason is that during summer more people buy ice cream and more people take a swim increasing the chance of getting attack by a shark. Therefore, the cause-and-effect relationship is not between sales and shark attacks but it actually has to with whether it is summer or not. This issue is called confounding; it basically means that we forgot to add variable in our linear regression model.
-
+ 
 ```latex
 \documentclass[tikz,border=10pt]{standalone}
 \usetikzlibrary{arrows.meta}
