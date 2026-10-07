@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HousMetrics</title>
+    <meta
+      name="description"
+      content="HousMetrics — causal inference and data-driven insights."
+    />
+    <style>
+      :root {
+        --bg: #08111f;
+        --panel: #101b2d;
+        --panel-2: #16253d;
+        --text: #edf6ff;
+        --muted: #b9cbe0;
+        --accent: #73d0ff;
+        --accent-2: #8ef0c3;
+        --border: rgba(255, 255, 255, 0.1);
+      }
+
+      * { box-sizing: border-box; }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, var(--bg), #0d1728 35%, #0b1320 100%);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .container {
+        width: min(1100px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        backdrop-filter: blur(12px);
+        background: rgba(8, 17, 31, 0.78);
+        border-bottom: 1px solid var(--border);
+        z-index: 10;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 72px;
+      }
+
+      .brand {
+        font-size: 1.35rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.96rem;
+      }
+
+      .hero {
+        padding: 72px 0 40px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.3fr 0.9fr;
+        gap: 32px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 0.42rem 0.8rem;
+        border-radius: 999px;
+        background: rgba(115, 208, 255, 0.12);
+        border: 1px solid rgba(115, 208, 255, 0.3);
+        color: var(--accent);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 5vw, 4.25rem);
+        line-height: 1.08;
+        margin: 1rem 0 1rem;
+      }
+
+      .lead {
+        font-size: 1.1rem;
+        color: var(--muted);
+        max-width: 620px;
+      }
+
+      .cta-row {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .button {
+        display: inline-block;
+        padding: 0.9rem 1.3rem;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+      }
+
+      .button.primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #06121d;
+      }
+
+      .button.secondary {
+        border: 1px solid var(--border);
+        color: var(--text);
+        background: rgba(255,255,255,0.02);
+      }
+
+      .card {
+        background: linear-gradient(180deg, var(--panel), var(--panel-2));
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: 0 18px 45px rgba(0,0,0,0.28);
+      }
+
+      .stats {
+        padding: 1.2rem;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .stat {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1rem;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.7rem;
+        margin-bottom: 0.2rem;
+      }
+
+      .stat span {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      main {
+        padding-bottom: 80px;
+      }
+
+      section {
+        padding-top: 40px;
+      }
+
+      .section-header {
+        margin-bottom: 1.2rem;
+      }
+
+      .section-header h2 {
+        margin: 0 0 0.4rem;
+        font-size: clamp(1.7rem, 2vw, 2.6rem);
+      }
+
+      .section-header p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.2rem;
+      }
+
+      .feature {
+        padding: 1.5rem;
+      }
+
+      .feature h3 {
+        margin-top: 0.8rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .feature p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .code-block {
+        background: rgba(7, 12, 21, 0.85);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        overflow-x: auto;
+        color: #dff7ff;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.95rem;
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        padding: 28px 0 54px;
+      }
+
+      @media (max-width: 820px) {
+        .hero-grid,
+        .feature-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .nav-links {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <nav>
+          <div class="brand">HousMetrics</div>
+          <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#approach">Approach</a>
+            <a href="#insights">Insights</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <span class="eyebrow">Causal inference</span>
+            <h1>Measuring what actually drives outcomes.</h1>
+            <p class="lead">
+              HousMetrics explores how relationships between variables can be misunderstood
+              when confounding is ignored, and how better causal reasoning leads to clearer
+              decisions in data analysis.
+            </p>
+            <div class="cta-row">
+              <a class="button primary" href="#about">Learn more</a>
+              <a class="button secondary" href="#insights">View insights</a>
+            </div>
+          </div>
+
+          <div class="card stats">
+            <div class="stats-grid">
+              <div class="stat">
+                <strong>1</strong>
+                <span>Core focus</span>
+              </div>
+              <div class="stat">
+                <strong>3</strong>
+                <span>Signal patterns</span>
+              </div>
+              <div class="stat">
+                <strong>92%</strong>
+                <span>False intuition</span>
+              </div>
+              <div class="stat">
+                <strong>∞</strong>
+                <span>Questions</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about">
+        <div class="container">
+          <div class="section-header">
+            <h2>About the project</h2>
+            <p>
+              This project outlines how causal inference differs from simple correlation
+              and why hidden factors can distort interpretation.
+            </p>
+          </div>
+
+          <div class="feature-grid">
+            <article class="card feature">
+              <div class="eyebrow">Correlation</div>
+              <h3>Correlation is not causation</h3>
+              <p>
+                Observed patterns may appear meaningful while actually reflecting a shared driver.
+              </p>
+            </article>
+
+            <article class="card feature">
+              <div class="eyebrow">Confounding</div>
+              <h3>Hidden variables matter</h3>
+              <p>
+                A confounder can cause both variables to move together and produce misleading results.
+              </p>
+            </article>
+
+            <article class="card feature">
+              <div class="eyebrow">Modeling</div>
+              <h3>Better estimation</h3>
+              <p>
+                By adjusting for the right variables, we can estimate effect sizes more faithfully.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="approach">
+        <div class="container">
+          <div class="section-header">
+            <h2>Example framework</h2>
+            <p>
+              A simple causal setup can be represented visually and then modeled in code.
+            </p>
+          </div>
+
+          <div class="code-block">
+            <pre>X = ice_cream_sales.reshape(-1, 1)
+y = shark_attacks
+model = LinearRegression()
+model.fit(X, y)
+
+print("Intercept:", model.intercept_)
+print("Slope:", model.coef_[0])</pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="insights">
+        <div class="container">
+          <div class="section-header">
+            <h2>Key insight</h2>
+            <p>
+              The relationship between two variables may look strong while the real causal effect
+              is driven by an omitted factor — a classic case of confounding bias.
+            </p>
+          </div>
+
+          <div class="card feature" style="padding: 1.5rem;">
+            <p>
+              In the example discussed in this project, the apparent effect of ice cream sales on shark attacks
+              was misleading because both are influenced by summer conditions. Once the confounder is included,
+              the true relationship becomes much clearer and far less dramatic.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">© 2026 HousMetrics</div>
+    </footer>
+  </body>
+</html>
