@@ -1,6 +1,23 @@
 # HousMetrics
+# Causal inference
+In machine learning, a linear regression model can be used to predict data points when the data is assumed to have a linear trend. Another use case of the linear regression model is to determine a cause-and-effect relationship between variables. This cause-and-effect relationship is established by estimating a causal quantity known as the average treatment effect (ATE). The ATE is defined as the average causal effect of a treatment or covariate on the outcome variable. More specifically, the ATE represents the cause-and-effect relationship between a covariate and the outcome variable. This is different than a pure correlative relationship between variables. Visualized we want to find the following:
 
-In machine learning, a linear regression model can be used to predict data points when the data is assumed to have a linear trend. Another use case of the linear regression model is to determine a cause-and-effect relationship between variables. This cause-and-effect relationship is established by estimating a causal quantity known as the average treatment effect (ATE). The ATE is defined as the average causal effect of a treatment or covariate on the outcome variable.
+```latex
+\documentclass[tikz,border=10pt]{standalone}
+\usetikzlibrary{arrows.meta}
+\begin{document}
+\begin{tikzpicture}[
+  node distance=4cm,
+  circ/.style={circle, draw, thick, minimum size=2.4cm, font=\large}
+]
+  \node[circ] (v) at (0,0) {Variable};
+  \node[circ] (o) at (6,0) {Outcome};
+  \draw[-{Stealth[length=3mm]}, very thick] (v) -- node[above, font=\large] {causal} (o);
+\end{tikzpicture}
+\end{document}
+```
+# Confounding
+Take, for instance, the infamous example of ice cream sales and shark attacks. We could see in the data that as sales go up shark attacks increase as well. This could lead someone to make the wrong conclusion that an incraese in ice cream sales cause shark attacks (or the other way around). The real reason is that during summer more people buy ice cream and more people take a swim increasing the chance of getting attack by a shark. Therefore, the cause-and-effect relationship is not between sales and shark attacks but it actually has to with whether it is summer or not. This issue is called confounding; it basically means that we forgot to add variable in our linear regression model.
 
 ```latex
 % Replace this example with your equations.
