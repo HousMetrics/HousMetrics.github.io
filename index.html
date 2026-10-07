@@ -3,101 +3,258 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HousMetrics</title>
+    <title>HousMetrics | Causal Inference</title>
     <style>
       :root {
         --bg: #0b1020;
         --panel: #121a2b;
+        --panel-alt: #162234;
         --primary: #7dd3fc;
         --accent: #a78bfa;
-        --text: #e5eefb;
-        --muted: #9fb3cc;
+        --text: #edf6ff;
+        --muted: #b9c7d9;
+        --code-bg: #0f172a;
+        --border: rgba(125, 211, 252, 0.22);
       }
 
       * { box-sizing: border-box; }
 
+      html { scroll-behavior: smooth; }
+
       body {
         margin: 0;
         font-family: Arial, Helvetica, sans-serif;
-        background: linear-gradient(135deg, var(--bg), #111827 50%, #0f172a);
+        background: linear-gradient(180deg, #0b1020 0%, #0f172a 100%);
         color: var(--text);
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
+        line-height: 1.7;
       }
 
-      .card {
-        width: min(900px, 90vw);
-        background: rgba(18, 26, 43, 0.9);
-        border: 1px solid rgba(125, 211, 252, 0.2);
-        border-radius: 18px;
-        padding: 48px 32px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
-        text-align: center;
+      .container {
+        width: min(1100px, 90vw);
+        margin: 0 auto;
+        padding: 48px 0 80px;
       }
 
-      .badge {
-        display: inline-block;
-        padding: 8px 14px;
-        border-radius: 999px;
-        background: rgba(167, 139, 250, 0.12);
-        border: 1px solid rgba(167, 139, 250, 0.3);
-        color: var(--primary);
-        font-size: 12px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        margin-bottom: 18px;
+      header {
+        padding: 24px 0 40px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      h1, h2, h3 {
+        margin-top: 0;
+        line-height: 1.2;
       }
 
       h1 {
-        font-size: clamp(2.2rem, 5vw, 4rem);
-        margin: 0 0 16px;
-        line-height: 1.1;
+        font-size: clamp(2.4rem, 5vw, 4rem);
+        margin-bottom: 10px;
       }
 
-      p {
+      .subtitle {
         color: var(--muted);
-        font-size: 1.05rem;
-        line-height: 1.7;
-        margin: 0 auto;
-        max-width: 680px;
+        font-size: 1.1rem;
       }
 
-      .links {
-        margin-top: 32px;
+      .lead {
+        margin: 28px 0 0;
+        color: var(--muted);
+        font-size: 1.08rem;
+      }
+
+      section {
+        margin-top: 38px;
+        background: rgba(18, 26, 43, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 28px 26px;
+      }
+
+      .figure-box {
+        margin: 30px 0;
+        border: 1px solid var(--border);
+        background: rgba(127, 158, 214, 0.05);
+        border-radius: 16px;
+        padding: 22px 18px;
+      }
+
+      .diagram {
         display: flex;
-        gap: 16px;
+        align-items: center;
         justify-content: center;
+        gap: 22px;
         flex-wrap: wrap;
+        margin: 12px 0 0;
+      }
+
+      .node {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        border: 2px solid var(--primary);
+        color: var(--text);
+        background: rgba(125, 211, 252, 0.08);
+        font-weight: 700;
+      }
+
+      .node.confounder {
+        border-color: var(--accent);
+        background: rgba(167, 139, 250, 0.08);
+      }
+
+      .arrow {
+        font-size: 2rem;
+        color: var(--primary);
+      }
+
+      .arrow.long {
+        transform: rotate(90deg);
+      }
+
+      pre {
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 20px;
+        overflow-x: auto;
+        margin: 18px 0;
+      }
+
+      code {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.96rem;
+        color: #dbeafe;
+      }
+
+      .output {
+        display: block;
+        color: var(--muted);
+        padding-top: 8px;
+      }
+
+      .note {
+        color: var(--primary);
+        font-weight: 600;
       }
 
       a {
-        text-decoration: none;
-        color: var(--text);
-        background: rgba(125, 211, 252, 0.08);
-        border: 1px solid rgba(125, 211, 252, 0.3);
-        padding: 12px 18px;
-        border-radius: 10px;
-        transition: transform 0.2s ease, border-color 0.2s ease;
+        color: var(--primary);
       }
 
-      a:hover {
-        transform: translateY(-1px);
-        border-color: rgba(125, 211, 252, 0.6);
+      @media (max-width: 640px) {
+        .container {
+          width: min(94vw, 1100px);
+        }
+
+        section {
+          padding: 20px 16px;
+        }
+
+        .diagram {
+          gap: 10px;
+        }
+
+        .node {
+          width: 130px;
+          height: 130px;
+        }
       }
     </style>
   </head>
   <body>
-    <main class="card">
-      <div class="badge">GitHub Pages</div>
-      <h1>HousMetrics</h1>
-      <p>
-        This is the initial landing page for HousMetrics. Your GitHub Pages site is active and
-        ready to be customized with your content, sections, and branding.
-      </p>
-      <div class="links">
-        <a href="https://github.com/HousMetrics/HousMetrics.github.io">Repository</a>
-      </div>
-    </main>
+    <div class="container">
+      <header>
+        <h1>HousMetrics</h1>
+        <div class="subtitle">Causal Inference</div>
+        <p class="lead">
+          A simple exploration of how causal relationships can be reasoned about, how confounding can distort
+          interpretation, and how linear regression can be used to estimate effects more carefully.
+        </p>
+      </header>
+
+      <section>
+        <h2>Why causal inference matters</h2>
+        <p>
+          In machine learning, a linear regression model can be used to predict data points when the data is assumed to
+          have a linear trend. Another use case is to determine whether a relationship between variables is not just
+          predictive but plausibly causal.
+        </p>
+
+        <div class="figure-box">
+          <div class="diagram">
+            <div class="node">Variable</div>
+            <div class="arrow">→</div>
+            <div class="node">Outcome</div>
+          </div>
+          <p style="margin: 18px 0 0; text-align: center; color: var(--muted);">
+            A direct causal relationship can be represented as a simple directional flow from variable to outcome.
+          </p>
+        </div>
+
+        <p>
+          In reality, there are often more variables and more intricate complexities lurking around the corner. A classic
+          example is the relationship between a seasonal driver and two observed outcomes, where correlation may look
+          strong even when the true causal story is more subtle.
+        </p>
+      </section>
+
+      <section>
+        <h2>Confounding</h2>
+        <p>
+          Consider a situation where a confounder influences both the treatment variable and the outcome. This can make
+          two variables appear strongly related even when one does not directly cause the other.
+        </p>
+
+        <div class="figure-box">
+          <div class="diagram">
+            <div class="node">Variable</div>
+            <div class="arrow">→</div>
+            <div class="node">Outcome</div>
+            <div class="arrow long">↑</div>
+            <div class="node confounder">Confounder</div>
+          </div>
+          <p style="margin: 18px 0 0; text-align: center; color: var(--muted);">
+            The confounder affects both the variable and the outcome, creating a misleading association.
+          </p>
+        </div>
+
+        <p>
+          A useful illustration is the example of ice cream sales and shark attacks. Both rise during summer, so the
+          correlation between them may look high even though the underlying causal mechanism is a third variable—warm
+          weather—driving both.
+        </p>
+
+        <pre><code>shark_attacks = 3 * summer_indicator + epsilon_sharks
+ice_cream_sales = 2 * summer_indicator + epsilon_sales</code></pre>
+
+        <p>
+          In this setup, the error terms reflect noise, but the shared seasonal pattern can create a misleadingly high
+          Pearson correlation. If we regress shark attacks on ice cream sales alone, we may infer a strong relationship
+          that is not truly causal.
+        </p>
+
+        <pre><code>X = ice_cream_sales.reshape(-1, 1)
+y = shark_attacks
+model = LinearRegression()
+model.fit(X, y)
+
+print("Intercept:", model.intercept_)
+print("Slope:", model.coef_[0])</code></pre>
+
+        <p class="output">Intercept: 0.31<br />Slope: 1.29</p>
+
+        <p>
+          This can be misleadingly interpreted as “for every ice cream sale there will be 1.29 shark attacks.” However,
+          the true causal story is different: the apparent relationship is confounded by the summer factor.
+        </p>
+
+        <p>
+          When we include the confounder in the model, the estimated relationship changes substantially. This illustrates
+          a core lesson of causal inference: <span class="note">correlation is not enough; we need to reason about the data-generating process.</span>
+        </p>
+      </section>
+    </div>
   </body>
 </html>
