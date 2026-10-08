@@ -205,7 +205,18 @@
         </p>
 
         <p>
-          Today we will estimate the causal effect of ice cream sales on shark attacks (or the lack thereof). Say we have analyzed a dataset and find that, every year for ten years, shark attacks increase whenever ice cream sales go up. Now we fit a linear regression model (OLS) with shark attacks as the outcome variable and ice cream sales as the regressor.
+          Today we will estimate the causal effect of ice cream sales on shark attacks (or the lack thereof). To do so, we use simulated data, so that we know the true effects. The data generating process is as follows:
+        </p>
+
+        <pre><code>shark_attacks = 3*summer_indicator + epsilon_sharks
+ice_cream_sales = 2*summer_indicator + epsilon_sales</code></pre>
+
+        <p>
+          Here, the last term in each formula is a random error term. Note that ice cream sales do not appear in the equation for shark attacks, so their true causal effect on shark attacks is zero, while the true effect of summer is 3.
+        </p>
+
+        <p>
+          Say we have analyzed this dataset, observed monthly over ten years, and find that whenever ice cream sales go up, shark attacks increase as well. The Pearson correlation between the two is 97%, so they appear almost perfectly related. Now we fit a linear regression model (OLS) with shark attacks as the outcome variable and ice cream sales as the regressor.
         </p>
 
         <pre><code>X = ice_cream_sales.reshape(-1,1)
@@ -213,7 +224,7 @@
 model = sm.OLS(shark_attacks, X).fit()</code></pre>
 
         <p>
-          After running the regression, we get a significant coefficient of 1.44 for ice cream sales. Surely this means that if ice cream sales increase, shark attacks will increase by a factor of 1.44? Wrong! We have not established causality here. What if I told you there is another variable that is actually the true cause behind the increase in both ice cream sales and shark attacks? This variable is a binary indicator of whether it is summer or not. In summer, more people buy ice cream, and more people go for a swim, increasing their chances of being attacked by a shark. Conducting the same regression with this binary variable added will change the results drastically.
+          After running the regression, we get a significant coefficient of 1.44 for ice cream sales (its p-value is below 0.05 and its 95% confidence interval excludes zero). Surely this means that if ice cream sales increase by one unit, shark attacks will increase by 1.44? Wrong! We have not established causality here. What if I told you there is another variable that is actually the true cause behind the increase in both ice cream sales and shark attacks? This variable is a binary indicator of whether it is summer or not. In summer, more people buy ice cream, and more people go for a swim, increasing their chances of being attacked by a shark. Conducting the same regression with this binary variable added will change the results drastically.
         </p>
 
         <pre><code>X = np.column_stack((ice_cream_sales, summer_indicator))
@@ -221,7 +232,7 @@ model = sm.OLS(shark_attacks, X).fit()</code></pre>
 model = sm.OLS(shark_attacks, X).fit()</code></pre>
 
         <p>
-          Now the coefficient for ice cream sales is insignificant and equal to 0.011, and the coefficient for the binary summer variable is significant and equal to 3.00 (equal to the true value). Whereas in the previous regression one could think that shark attacks depend causally (and significantly) on ice cream sales, the second regression makes it clear that the relationship between the two variables is more intricate. Visually, in the first setting we assume the following:
+          Now the coefficient for ice cream sales is insignificant and equal to 0.011 (its p-value is above 0.05 and its 95% confidence interval contains zero), and the coefficient for the binary summer variable is significant and equal to 3.00 (equal to the true value). Note that an insignificant coefficient is not proof of a zero effect in general; here we know the true effect is zero because we built the data ourselves. Whereas in the previous regression one could think that shark attacks depend causally (and significantly) on ice cream sales, the second regression makes it clear that the relationship between the two variables is more intricate. Visually, in the first setting we assume the following:
         </p>
 
         <div class="diagram-box">
@@ -236,7 +247,7 @@ model = sm.OLS(shark_attacks, X).fit()</code></pre>
         </div>
 
         <p>
-          However, in reality there is another variable that is the actual cause of both variables increasing. Not taking that variable into account yielded a large bias and therefore an incorrect representation of reality. This bias is called confounding bias. It arises when an important variable is not included or accounted for in the analysis. So the visualization we should actually consider is the following:
+          However, in reality there is another variable that is the actual cause of both variables increasing. Not taking that variable into account yielded a large bias and therefore an incorrect representation of reality. This bias is called confounding bias, or omitted variable bias. It arises when an important variable is not included or accounted for in the analysis. A confounder is specifically a common cause of both the variable and the outcome. So the visualization we should actually consider is the following:
         </p>
 
         <div class="diagram-box">
