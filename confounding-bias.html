@@ -281,6 +281,10 @@ model = sm.OLS(shark_attacks, X).fit()</code></pre>
         <p>
           So how are ice cream sales and shark attacks related? Not causally! They are correlated in that, whenever it is summer, people start buying more ice cream, and people (possibly others) go for a swim, risking a shark attack.
         </p>
+
+        <p>
+          Does this mean we should simply add as many variables as possible? Not quite. Some variables, such as colliders, create bias when you control for them, even though they seem harmless. Knowing which variables to include and which to leave out requires thinking about the causal structure first, which brings us to the topic of colliders and bad controls.
+        </p>
       </section>
 
       <section>
