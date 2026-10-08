@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HousMetrics | Confounding Bias</title>
+    <title>HousMetrics | Causal Inference</title>
     <style>
       * {
         box-sizing: border-box;
@@ -58,11 +58,6 @@
         margin: 0 0 8px 0;
       }
 
-      .lead {
-        color: #656d76;
-        margin: 16px 0 24px 0;
-      }
-
       p {
         margin: 0 0 16px 0;
       }
@@ -84,26 +79,6 @@
         font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
         font-size: 14px;
         color: #24292f;
-      }
-
-      .code-label {
-        color: #656d76;
-        font-size: 12px;
-        margin-bottom: 8px;
-        font-weight: 500;
-      }
-
-      .output {
-        background: #f6f8fa;
-        border: 1px solid #d0d7de;
-        border-radius: 6px;
-        padding: 16px;
-        margin: 16px 0;
-        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-        font-size: 14px;
-        color: #24292f;
-        white-space: pre-wrap;
-        word-break: break-word;
       }
 
       .diagram-box {
@@ -144,10 +119,16 @@
         flex-shrink: 0;
       }
 
-      .diagram-caption {
-        color: #656d76;
-        font-size: 14px;
-        margin-top: 12px;
+      .arrow-labeled {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .arrow-label {
+        font-size: 16px;
+        color: #24292f;
       }
 
       .confounder-diagram {
@@ -179,15 +160,6 @@
 
       section {
         margin: 32px 0;
-      }
-
-      .em {
-        font-style: italic;
-      }
-
-      .strong {
-        font-weight: 600;
-        color: #24292f;
       }
 
       @media (max-width: 640px) {
@@ -225,37 +197,46 @@
       <a href="causal-inference.html" class="back-link">← Back to Causal Inference</a>
 
       <h1>HousMetrics</h1>
-      <div class="subtitle">Confounding Bias</div>
-      <p class="lead">
-        A simple exploration of how causal relationships can be reasoned about, how confounding can distort interpretation, and how linear regression can be used to estimate effects more carefully.
-      </p>
+      <div class="subtitle">Causal inference</div>
 
       <section>
-        <h2>Why Causal Inference Matters</h2>
         <p>
-          In machine learning, a linear regression model can be used to predict data points when the data is assumed to have a linear trend. Another use case is to determine whether a relationship between two variables is actually causal. Understanding causality requires thinking carefully about the data-generating process, not just the correlations we observe.
+          Imagine you fit a linear regression model to your data. How should you interpret the coefficients? How are your covariates related to your outcome variable? Can you say that the x variable is the cause of the y variable? These questions will be answered here.
+        </p>
+
+        <p>
+          Today we will estimate the causal effect of ice cream sales on shark attacks (or the lack thereof). Say we have analyzed a dataset and find that, every year for ten years, shark attacks increase whenever ice cream sales go up. Now we fit a linear regression model (OLS) with shark attacks as the outcome variable and ice cream sales as the regressor.
+        </p>
+
+        <pre><code>X = ice_cream_sales.reshape(-1,1)
+
+model = sm.OLS(shark_attacks, X).fit()</code></pre>
+
+        <p>
+          After running the regression, we get a significant coefficient of 1.44 for ice cream sales. Surely this means that if ice cream sales increase, shark attacks will increase by a factor of 1.44? Wrong! We have not established causality here. What if I told you there is another variable that is actually the true cause behind the increase in both ice cream sales and shark attacks? This variable is a binary indicator of whether it is summer or not. In summer, more people buy ice cream, and more people go for a swim, increasing their chances of being attacked by a shark. Conducting the same regression with this binary variable added will change the results drastically.
+        </p>
+
+        <pre><code>X = np.column_stack((ice_cream_sales, summer_indicator))
+
+model = sm.OLS(shark_attacks, X).fit()</code></pre>
+
+        <p>
+          Now the coefficient for ice cream sales is insignificant and equal to 0.011, and the coefficient for the binary summer variable is significant and equal to 3.00 (equal to the true value). Whereas in the previous regression one could think that shark attacks depend causally (and significantly) on ice cream sales, the second regression makes it clear that the relationship between the two variables is more intricate. Visually, in the first setting we assume the following:
         </p>
 
         <div class="diagram-box">
           <div class="diagram">
             <div class="node">Variable</div>
-            <div class="arrow">─────→</div>
+            <div class="arrow-labeled">
+              <span class="arrow-label">causal</span>
+              <span class="arrow">─────→</span>
+            </div>
             <div class="node">Outcome</div>
           </div>
-          <p class="diagram-caption">
-            A direct causal relationship can be represented as a simple directional flow from variable to outcome.
-          </p>
         </div>
 
         <p>
-          In reality, there are often more variables and more intricate complexities lurking around the corner. A classic example is the relationship between a seasonal driver and two observed outcomes that both rise in summer.
-        </p>
-      </section>
-
-      <section>
-        <h2>Confounding</h2>
-        <p>
-          Consider a situation where a confounder influences both the treatment variable and the outcome. This can make two variables appear strongly related even when one does not directly cause the other.
+          However, in reality there is another variable that is the actual cause of both variables increasing. Not taking that variable into account yielded a large bias and therefore an incorrect representation of reality. This bias is called confounding bias. It arises when an important variable is not included or accounted for in the analysis. So the visualization we should actually consider is the following:
         </p>
 
         <div class="diagram-box">
@@ -265,15 +246,12 @@
             </div>
             <div class="angled-arrows">
               <svg viewBox="0 0 350 80" preserveAspectRatio="xMidYMid meet">
-                <!-- Arrow definitions -->
                 <defs>
                   <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
                     <polygon points="0 0, 10 3, 0 6" fill="#24292f" />
                   </marker>
                 </defs>
-                <!-- Left arrow from confounder (bottom-left) to variable -->
                 <line x1="165" y1="10" x2="95" y2="75" stroke="#24292f" stroke-width="2" marker-end="url(#arrowhead)" />
-                <!-- Right arrow from confounder (bottom-right) to outcome -->
                 <line x1="185" y1="10" x2="255" y2="75" stroke="#24292f" stroke-width="2" marker-end="url(#arrowhead)" />
               </svg>
             </div>
@@ -283,69 +261,19 @@
               <div class="node">Outcome</div>
             </div>
           </div>
-          <p class="diagram-caption">
-            The confounder affects both the variable and the outcome, creating a misleading association.
-          </p>
         </div>
 
         <p>
-          A useful illustration is the example of ice cream sales and shark attacks. Both rise during summer, so the correlation between them may look high even though the underlying causal mechanism is completely different.
-        </p>
-
-        <div class="code-label">Data generating process:</div>
-        <pre><code>shark_attacks = 3*summer_indicator + epsilon_sharks
-ice_cream_sales = 2*summer_indicator + epsilon_sales</code></pre>
-
-        <p>
-          Where the last terms of each formula represent the error term. When we receive the data and check the Pearson correlation between shark attacks and ice cream sales it is equal to 92%. So they appear highly correlated.
+          The diagram above is the one we used in the second regression, which led to highly accurate parameter estimates. Not taking the binary variable into account leads to confounding bias, as we have seen.
         </p>
 
         <p>
-          In this setup, the error terms reflect noise, but the shared seasonal pattern can create a misleadingly high Pearson correlation. If we regress shark attacks on ice cream sales alone, we get:
+          So how are ice cream sales and shark attacks related? Not causally! They are correlated in that, whenever it is summer, people start buying more ice cream, and people (possibly others) go for a swim, risking a shark attack.
         </p>
+      </section>
 
-        <div class="code-label">Naive regression (only ice cream sales):</div>
-        <pre><code>X = ice_cream_sales.reshape(-1, 1)
-y = shark_attacks
-model = LinearRegression()
-model.fit(X, y)
-
-print("Intercept:", model.intercept_)
-print("Slope:", model.coef_[0])</code></pre>
-
-        <div class="output">Intercept: 0.31
-Slope: 1.29</div>
-
-        <p>
-          This can be misleadingly interpreted as <span class="em">"for every ice cream sale there will be 1.29 shark attacks."</span> However, we have seen that the original data explicitly shows that ice cream sales do not cause shark attacks. The true effect is zero!
-        </p>
-
-        <p>
-          When we include the confounder (summer indicator) in the model, the estimated relationship changes substantially:
-        </p>
-
-        <div class="code-label">Including the confounder:</div>
-        <pre><code>X = np.column_stack([ice_cream_sales, summer_indicator])
-y = shark_attacks
-model = LinearRegression()
-model.fit(X, y)
-
-print("Intercept:", model.intercept_)
-print("Slope:", model.coef_)</code></pre>
-
-        <div class="output">Intercept: 0.22
-Slope: [0.03 2.94]</div>
-
-        <p>
-          And when we control for the confounder and predict without sales:
-        </p>
-
-        <div class="output">Intercept: 0.223
-Slope: 3.01</div>
-
-        <p>
-          This illustrates a core lesson of causal inference: <span class="strong">correlation is not enough; we need to reason about the data-generating process.</span> By accounting for the confounder, we can see that ice cream sales have virtually no effect on shark attacks, and that the summer season is the true driver of both.
-        </p>
+      <section>
+        <h2>References</h2>
       </section>
     </div>
   </body>
