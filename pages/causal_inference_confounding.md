@@ -1,6 +1,6 @@
 # HousMetrics
 # Causal inference
-In machine learning, a linear regression model can be used to predict data points when the data is assumed to have a linear trend. Another use case of the linear regression model is to determine a...
+In machine learning, a linear regression model can be used to predict data points when the data is assumed to have a linear trend. Another use of the linear regression model is to determine a...
 
 ```latex
 \documentclass[tikz,border=10pt]{standalone}
