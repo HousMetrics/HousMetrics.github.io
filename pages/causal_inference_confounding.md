@@ -1,6 +1,22 @@
 # HousMetrics
 # Causal inference
-In machine learning, a linear regression model can be used to predict data points when the data is assumed to have a linear trend. Another use of the linear regression model is to determine a...
+Imagine you fit a linear regression model to your data. How should you interpret the coefficients? How are your covariates related to your outcome variable? Can you say that the x variable is the cause of the y variable? These questions will be answered here.
+
+Today we will estimate the causal effect of ice cream sales on shark attacks (or the lack thereof). Say we have done an analysis on a dataset and we find that every year for ten years whenever ice cream sales go up shark attacks increase as well. Now we fit a linear regression model (OLS) with shark attacks as the outcome variable and ice cream sales as the regressor. 
+
+```python
+X = ice_cream_sales.reshape(-1,1)
+
+model = sm.OLS(shark_attacks, X).fit()
+```
+After running the regression we get a significant coefficient for ice cream sales of 1.44. Surely this should mean that if ice cream sales increase then shark attacks will increase by a factor of 1.44? WRONG! We have not established causality here. What if I told you there is another variable which is actually the true cause behind the increase of ice cream sales and shark attacks. This variable is a binary variable indicating whether it is summer or not. As in summer more people buy ice cream and more people go for swim increasing their chances of getting attacked by a shark. Now conducting the same regression but adding this binary variable will change the results drastically. 
+
+```python
+X = np.column_stack((ice_cream_sales, summer_indicator))
+
+model = sm.OLS(shark_attacks, X).fit()
+```
+Now the coefficient for ice cream sales is insignificant and equal to 0.011 and the coefficient for the binary summer variable is significant and equal to 3.00 (equal to the true value). Where in the previous regression one could think that shark attacks is causally (and significantly) dependent on ice cream sales. In the second regression it is clear that the relationship between the two variables is more intricate. Visually in the first setting we assume the following:
 
 ```latex
 \documentclass[tikz,border=10pt]{standalone}
@@ -16,7 +32,9 @@ In machine learning, a linear regression model can be used to predict data point
 \end{tikzpicture}
 \end{document}
 ```
-The above image is a simple case of causal relationship, *in reality there are more variables or more intricate complexities lurking around the corner*. Take, for instance, the infamous example of...
+
+However, in reality there is another variable which is the actual cause of the two variables increasing. Not taking that variable into account yielded a large bias and therefore an incorrect representation of reality. This bias is called confounding bias. It arises when an important variable is not included or accounted for in the analysis. So the actual visualization we should consider is the following:
+
 
 ```latex
 \documentclass[tikz,border=10pt]{standalone}
@@ -37,33 +55,8 @@ The above image is a simple case of causal relationship, *in reality there are m
 \end{document}
 ```
 
-Let's try to estimate the causal effect of ice cream sales on shark attacks. We assume the following relationships hold:
-```python
-shark_attacks = 3*summer_indicator + epsilon_sharks
-ice_cream_sales = 2*summer_indicator + epsilon_sales
-```
-Where the last terms of each formula represent the error term. When we receive the data and check the Pearson correlation between shark attacks and ice cream sales it is equal to 92%. Surely these...
+The image above is the one we used in the second regression which led to highly accurate parameter estimates. Not taking the binary variable into account leads to confounding bias as we have seen. 
 
-``` python
-X = ice_cream_sales.reshape(-1, 1)
-y = shark_attacks
-model = LinearRegression()
-model.fit(X, y)
+So how are ice cream sales and shark attacks related? Not causally! They are correlated to each other in that whenever it is summer people start buying more ice cream and people (possible others) go for a swim risking a shark attack. 
 
-print("Intercept:", model.intercept_)
-print("Slope:", model.coef_[0])
-```
-```
-Intercept: 0.31
-Slope: 1.29
-```
-This could then be misleadingly interpreted as for every ice cream sale there will be 1.29 shark attacks. However, we have seen that the original data explicitly shows that these two variables are...
-```
-Intercept:, 0.22
-Slope: [0.03 2.94]
-```
-and without sales we get:
-```
-Intercept:, 0.223
-Slope: 3.01
-```
+# references
